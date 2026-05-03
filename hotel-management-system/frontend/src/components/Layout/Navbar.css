@@ -1,0 +1,44 @@
+/* src/components/Layout/Navbar.css */
+.navbar-custom {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 1030;
+}
+
+.navbar-brand-link {
+  color: white !important;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.nav-icon {
+  color: white !important;
+  font-size: 1.2rem;
+  position: relative;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  font-size: 0.6rem;
+}
+
+.notification-dropdown {
+  width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  white-space: normal;
+}
+
+.notification-content {
+  padding: 8px 0;
+}
+
+.user-dropdown {
+  color: white !important;
+  text-decoration: none;
+}

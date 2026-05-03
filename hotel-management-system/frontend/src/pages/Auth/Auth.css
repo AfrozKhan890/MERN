@@ -1,0 +1,31 @@
+/* src/pages/Auth/Auth.css */
+.auth-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+}
+
+.auth-card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.auth-card h2 {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.auth-card h3 {
+  color: #34495e;
+}
+
+.forgot-password-link {
+  color: #7f8c8d;
+  text-decoration: none;
+}
+
+.forgot-password-link:hover {
+  color: #3498db;
+}
