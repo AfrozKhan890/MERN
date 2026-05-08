@@ -20,6 +20,7 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const guestRoutes = require('./routes/guestRoutes');
 const settingsRoutes = require('./routes/settingsRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const hotelRoutes = require('./routes/hotelRoutes');
 
 // Import middleware
 const { errorHandler } = require('./middleware/errorMiddleware');
@@ -54,6 +55,9 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/guests', guestRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/notifications', notificationRoutes);
+
+// Add this with other app.use routes
+app.use('/api/hotels', hotelRoutes);
 // Health check route
 app.get('/api/health', (req, res) => {
   res.json({ 

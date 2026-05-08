@@ -1,4 +1,4 @@
-// backend/models/User.js
+// backend/models/User.js - FIX department requirement
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
@@ -24,13 +24,13 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['admin', 'manager', 'receptionist', 'housekeeping', 'maintenance'],
-    default: 'receptionist'
+    enum: ['admin', 'manager', 'receptionist', 'housekeeping', 'maintenance', 'guest'],
+    default: 'guest'  // Default to guest for public registration
   },
   department: {
     type: String,
-    required: [true, 'Please provide department'],
-    trim: true
+    trim: true,
+    default: 'guest'  // Default value instead of required
   },
   phone: {
     type: String,
@@ -68,13 +68,10 @@ userSchema.pre('save', async function(next) {
   next();
 });
 
-// Method to compare password - THIS IS THE KEY FIX
-// The controller calls comparePassword, so the method must be named comparePassword
 userSchema.methods.comparePassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Remove password from JSON output
 userSchema.methods.toJSON = function() {
   const user = this.toObject();
   delete user.password;

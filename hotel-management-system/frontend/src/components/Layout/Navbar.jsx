@@ -1,14 +1,16 @@
-// frontend/src/components/Layout/Navbar.jsx (REPLACE COMPLETELY)
+// frontend/src/components/Layout/Navbar.jsx - WITH DARK THEME TOGGLE
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Navbar as BNavbar, Nav, Container, Dropdown, Badge } from 'react-bootstrap';
-import { FaBell, FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
+import { FaBell, FaUserCircle, FaSignOutAlt, FaSun, FaMoon, FaHotel, FaChartLine, FaCog } from 'react-icons/fa';
+// import { useTheme } from '../../context/ThemeContext';
 import API from '../../services/api';
 import './Navbar.css';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
+  // const { darkMode, toggleTheme } = useTheme();
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
 
@@ -26,7 +28,6 @@ const Navbar = () => {
       const { data } = await API.get('/notifications/unread-count');
       setUnreadCount(data.count || 0);
     } catch (error) {
-      // Silently fail - notifications might not be available
       setUnreadCount(0);
     }
   };
@@ -36,7 +37,6 @@ const Navbar = () => {
       const { data } = await API.get('/notifications?limit=5');
       setNotifications(data.data || []);
     } catch (error) {
-      // Silently fail
       setNotifications([]);
     }
   };
@@ -48,61 +48,73 @@ const Navbar = () => {
 
   if (!user) return null;
 
+  const getDashboardLink = () => {
+    if (user.role === 'admin') return '/dashboard/admin';
+    if (user.role === 'manager') return '/dashboard/manager';
+    return '/dashboard/staff';
+  };
+
   return (
-    <BNavbar bg="dark" variant="dark" className="navbar-custom" fixed="top">
+    <BNavbar className="navbar-custom" fixed="top">
       <Container fluid>
         <BNavbar.Brand>
-          <Link to={`/dashboard/${user.role === 'admin' ? 'admin' : user.role === 'manager' ? 'manager' : 'staff'}`} className="navbar-brand-link">
-            🏨 LuxuryStay
+          <Link to={getDashboardLink()} className="navbar-brand-link">
+            <FaHotel /> LuxuryStay
           </Link>
         </BNavbar.Brand>
         
-        <BNavbar.Toggle />
-        
-        <BNavbar.Collapse className="justify-content-end">
-          <Nav className="align-items-center">
-            {/* Notifications Dropdown */}
-            <Dropdown align="end" className="me-3">
-              <Dropdown.Toggle variant="link" className="nav-icon">
-                <FaBell />
-                {unreadCount > 0 && (
-                  <Badge bg="danger" pill className="notification-badge">{unreadCount}</Badge>
-                )}
-              </Dropdown.Toggle>
-              <Dropdown.Menu className="notification-dropdown" style={{ width: '350px' }}>
-                <Dropdown.Header>Notifications</Dropdown.Header>
-                {notifications.length > 0 ? notifications.map(notif => (
-                  <Dropdown.Item key={notif._id}>
-                    <div>
-                      <strong>{notif.title}</strong>
-                      <p className="mb-0 small">{notif.message}</p>
-                      <small className="text-muted">{new Date(notif.createdAt).toLocaleString()}</small>
-                    </div>
-                  </Dropdown.Item>
-                )) : (
-                  <Dropdown.Item disabled>No notifications</Dropdown.Item>
-                )}
-              </Dropdown.Menu>
-            </Dropdown>
+        <div className="navbar-actions">
+          {/* Theme Toggle Button */}
+          
 
-            {/* User Dropdown */}
-            <Dropdown align="end">
-              <Dropdown.Toggle variant="link" className="user-dropdown">
-                <FaUserCircle className="me-1" /> {user.name || 'User'}
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Header>
-                  <strong>{user.name}</strong><br />
-                  <small>{user.email}</small>
-                </Dropdown.Header>
-                <Dropdown.Divider />
-                <Dropdown.Item onClick={handleLogout} className="text-danger">
-                  <FaSignOutAlt className="me-2" /> Logout
+          {/* Notifications Dropdown */}
+          <Dropdown align="end">
+            <Dropdown.Toggle variant="link" className="nav-icon">
+              <FaBell />
+              {unreadCount > 0 && (
+                <Badge bg="danger" pill className="notification-badge">{unreadCount}</Badge>
+              )}
+            </Dropdown.Toggle>
+            <Dropdown.Menu className="notification-dropdown">
+              <Dropdown.Header>Notifications</Dropdown.Header>
+              {notifications.length > 0 ? notifications.map(notif => (
+                <Dropdown.Item key={notif._id}>
+                  <strong>{notif.title}</strong>
+                  <p className="mb-0 small">{notif.message}</p>
+                  <small className="text-muted">{new Date(notif.createdAt).toLocaleString()}</small>
                 </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </Nav>
-        </BNavbar.Collapse>
+              )) : (
+                <Dropdown.Item disabled>No notifications</Dropdown.Item>
+              )}
+            </Dropdown.Menu>
+          </Dropdown>
+
+          {/* User Dropdown */}
+          <Dropdown align="end">
+            <Dropdown.Toggle variant="link" className="user-dropdown">
+              <FaUserCircle className="me-1" /> {user.name || 'User'}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Header>
+                <strong>{user.name}</strong><br />
+                <small>{user.email}</small>
+              </Dropdown.Header>
+              <Dropdown.Divider />
+              <Dropdown.Item onClick={() => navigate('/profile')}>
+                <FaUserCircle className="me-2" /> Profile
+              </Dropdown.Item>
+              {user.role === 'admin' && (
+                <Dropdown.Item onClick={() => navigate('/settings')}>
+                  <FaCog className="me-2" /> Settings
+                </Dropdown.Item>
+              )}
+              <Dropdown.Divider />
+              <Dropdown.Item onClick={handleLogout} className="text-danger">
+                <FaSignOutAlt className="me-2" /> Logout
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
       </Container>
     </BNavbar>
   );

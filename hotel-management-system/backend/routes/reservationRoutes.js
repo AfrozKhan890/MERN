@@ -5,7 +5,7 @@ const reservationController = require('../controllers/reservationController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
 router.use(protect);
-
+router.get('/today', reservationController.getTodayReservations);
 router.route('/')
   .get(reservationController.getReservations)
   .post(reservationController.createReservation);
