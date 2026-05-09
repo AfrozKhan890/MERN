@@ -1,0 +1,43 @@
+/* frontend/src/pages/Profile/Profile.css */
+.profile-sidebar {
+  overflow: hidden;
+}
+
+.profile-avatar-lg {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4a6cf7, #6c5ce7);
+  color: white;
+  font-size: 2.5rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.profile-tabs {
+  border-top: 1px solid #f0f0f0;
+}
+
+.profile-tab {
+  padding: 15px 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-left: 3px solid transparent;
+  font-weight: 500;
+  color: #666;
+}
+
+.profile-tab:hover {
+  background: #f8f9ff;
+  color: #4a6cf7;
+}
+
+.profile-tab.active {
+  background: #f0f4ff;
+  color: #4a6cf7;
+  border-left-color: #4a6cf7;
+  font-weight: 600;
+}

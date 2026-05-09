@@ -1,0 +1,44 @@
+/* frontend/src/pages/Gallery/HotelGallery.css */
+.hotel-admin-card {
+  overflow: hidden;
+}
+
+.hotel-admin-card .card-body {
+  padding: 20px;
+}
+
+.hotel-admin-card .card-body h5 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0B1D3A;
+}
+
+.hotel-card-image {
+  transition: transform 0.3s ease;
+}
+
+.hotel-admin-card:hover .hotel-card-image {
+  transform: scale(1.03);
+}
+
+/* Form styles in modal */
+.form-modern .form-control,
+.form-modern .form-select {
+  border-radius: 8px;
+  border: 2px solid #E5E7EB;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+}
+
+.form-modern .form-control:focus,
+.form-modern .form-select:focus {
+  border-color: #0B1D3A;
+  box-shadow: 0 0 0 3px rgba(11, 29, 58, 0.08);
+}
+
+.form-modern .form-label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.85rem;
+  margin-bottom: 5px;
+}
