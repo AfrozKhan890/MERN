@@ -1,4 +1,3 @@
-// frontend/src/pages/Reports/ReportsAnalytics.jsx
 import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, Table, Form, Spinner, Nav } from 'react-bootstrap';
 import { Line, Bar, Pie, Doughnut } from 'react-chartjs-2';

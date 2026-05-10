@@ -1,4 +1,3 @@
-// frontend/src/pages/Reservations/ReservationList.jsx - FIXED with API
 import React, { useState, useEffect } from 'react';
 import { Card, Table, Button, Badge, Form, Row, Col, Modal, Spinner } from 'react-bootstrap';
 import { FaPlus, FaSearch, FaEye, FaEdit, FaTrash, FaCheckCircle } from 'react-icons/fa';

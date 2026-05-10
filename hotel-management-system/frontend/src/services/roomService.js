@@ -1,4 +1,3 @@
-// frontend/src/services/roomService.js
 import { API_BASE_URL } from './config';
 import authService from './authService';
 

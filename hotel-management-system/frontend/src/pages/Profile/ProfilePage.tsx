@@ -1,4 +1,3 @@
-// frontend/src/pages/Profile/ProfilePage.jsx
 import React, { useState, useEffect } from 'react';
 import { Card, Form, Button, Row, Col, Alert } from 'react-bootstrap';
 import { motion } from 'framer-motion';

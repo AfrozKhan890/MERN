@@ -1,4 +1,3 @@
-// src/pages/Reservations/CreateReservation.js
 import React, { useState, useEffect } from 'react';
 import { Card, Form, Button, Row, Col, Alert, Spinner } from 'react-bootstrap';
 import { FaSave, FaArrowLeft } from 'react-icons/fa';

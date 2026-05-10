@@ -1,4 +1,3 @@
-// frontend/src/pages/Users/UserManagement.jsx - COMPLETE USER MANAGEMENT
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Table, Button, Badge, Modal, Form, Alert, Pagination, InputGroup } from 'react-bootstrap';
 import { FaUserPlus, FaEdit, FaTrash, FaUserCheck, FaUserTimes, FaShieldAlt, FaSearch, FaFilter, FaDownload, FaEye, FaBan, FaCheckCircle, FaEnvelope, FaPhone, FaCalendar } from 'react-icons/fa';

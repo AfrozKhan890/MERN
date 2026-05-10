@@ -1,4 +1,3 @@
-// frontend/src/pages/Guests/GuestManagement.jsx
 import React, { useState, useEffect } from 'react';
 import { 
   Card, Table, Button, Modal, Form, Badge,

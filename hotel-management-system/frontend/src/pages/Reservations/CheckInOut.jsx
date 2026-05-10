@@ -1,4 +1,3 @@
-// frontend/src/pages/Reservations/CheckInOut.jsx - FIXED
 import React, { useState, useEffect } from 'react';
 import { Card, Table, Button, Badge, Row, Col, Modal, Form, Spinner } from 'react-bootstrap';
 import { FaCheckCircle, FaSignOutAlt, FaBed } from 'react-icons/fa';

@@ -1,4 +1,3 @@
-// frontend/src/pages/Settings/SettingsPage.jsx
 import React, { useState, useEffect } from 'react';
 import { Card, Form, Button, Row, Col, Nav } from 'react-bootstrap';
 import { motion } from 'framer-motion';

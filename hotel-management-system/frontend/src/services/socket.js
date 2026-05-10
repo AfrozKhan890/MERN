@@ -1,4 +1,3 @@
-// frontend/src/services/socket.js - Socket.IO Client Service (FIXED for React)
 import { io } from 'socket.io-client';
 
 // Use environment variable with REACT_APP_ prefix, or default to localhost

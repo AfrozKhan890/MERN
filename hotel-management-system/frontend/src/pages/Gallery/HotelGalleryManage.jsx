@@ -1,4 +1,3 @@
-// frontend/src/pages/Gallery/HotelGalleryManage.jsx - FULLY OPTIMIZED (No infinite loops)
 import React, { useState, useEffect, useCallback } from 'react';
 import { Row, Col, Card, Button, Modal, Form, Badge, Spinner } from 'react-bootstrap';
 import { motion } from 'framer-motion';
