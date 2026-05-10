@@ -1,5 +1,3 @@
-// frontend/src/pages/Gallery/GalleryPage.jsx - COMPLETE FIXED (NO SPAM)
-
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { Container, Row, Col, Card, Button, Modal, Badge, Form, Alert, Spinner } from 'react-bootstrap';

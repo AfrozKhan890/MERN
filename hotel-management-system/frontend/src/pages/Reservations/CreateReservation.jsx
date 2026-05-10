@@ -1,9 +1,10 @@
 // src/pages/Reservations/CreateReservation.js
-import React, { useState } from 'react';
-import { Card, Form, Button, Row, Col, Alert } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Card, Form, Button, Row, Col, Alert, Spinner } from 'react-bootstrap';
 import { FaSave, FaArrowLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import API from '../../services/api';
 import './Reservations.css';
 
 const CreateReservation = () => {
@@ -14,22 +15,33 @@ const CreateReservation = () => {
     phone: '',
     roomType: '',
     roomNumber: '',
+    roomId: '',
     checkIn: '',
     checkOut: '',
     adults: 1,
     children: 0,
     specialRequests: '',
-    paymentMethod: 'credit-card'
+    paymentMethod: 'Credit Card'
   });
+  const [availableRooms, setAvailableRooms] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [fetchingRooms, setFetchingRooms] = useState(true);
+  const [error, setError] = useState('');
 
-  const [availableRooms] = useState([
-    { number: '101', type: 'Standard', price: 100 },
-    { number: '102', type: 'Standard', price: 100 },
-    { number: '201', type: 'Deluxe', price: 200 },
-    { number: '202', type: 'Deluxe', price: 200 },
-    { number: '301', type: 'Suite', price: 500 },
-    { number: '401', type: 'Presidential', price: 1000 }
-  ]);
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const { data } = await API.get('/rooms?status=Available');
+        setAvailableRooms(data.rooms || []);
+      } catch (err) {
+        toast.error('Failed to load available rooms');
+        setError('Could not load room data');
+      } finally {
+        setFetchingRooms(false);
+      }
+    };
+    fetchRooms();
+  }, []);
 
   const calculateNights = () => {
     if (formData.checkIn && formData.checkOut) {
@@ -43,7 +55,7 @@ const CreateReservation = () => {
   };
 
   const calculateTotal = () => {
-    const room = availableRooms.find(r => r.number === formData.roomNumber);
+    const room = availableRooms.find(r => r.roomNumber === formData.roomNumber);
     if (room) {
       return room.price * calculateNights();
     }
@@ -51,27 +63,85 @@ const CreateReservation = () => {
   };
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    if (name === 'roomType') {
+      setFormData(prev => ({
+        ...prev,
+        roomType: value,
+        roomNumber: '',
+        roomId: ''
+      }));
+    } else if (name === 'roomNumber') {
+      const selectedRoom = availableRooms.find(r => r.roomNumber === value);
+      setFormData(prev => ({
+        ...prev,
+        roomNumber: value,
+        roomId: selectedRoom?._id || '',
+        roomType: selectedRoom?.type || prev.roomType
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validate form
+    setError('');
+
     if (calculateNights() <= 0) {
       toast.error('Check-out date must be after check-in date');
       return;
     }
-    
-    toast.success('Reservation created successfully');
-    navigate('/reservations');
+
+    if (!formData.roomId) {
+      toast.error('Please select a room');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const payload = {
+        roomId: formData.roomId,
+        guestInfo: {
+          name: formData.guestName,
+          email: formData.email,
+          phone: formData.phone
+        },
+        checkIn: formData.checkIn,
+        checkOut: formData.checkOut,
+        adults: parseInt(formData.adults),
+        children: parseInt(formData.children),
+        paymentMethod: formData.paymentMethod,
+        specialRequests: formData.specialRequests
+      };
+
+      await API.post('/reservations', payload);
+      toast.success('Reservation created successfully');
+      navigate('/reservations');
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Failed to create reservation';
+      toast.error(msg);
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const filteredRooms = availableRooms.filter(room => 
     !formData.roomType || room.type === formData.roomType
   );
+
+  if (fetchingRooms) {
+    return (
+      <div className="reservation-form-container d-flex justify-content-center align-items-center" style={{ minHeight: '400px' }}>
+        <Spinner animation="border" />
+      </div>
+    );
+  }
 
   return (
     <div className="reservation-form-container">
@@ -81,6 +151,8 @@ const CreateReservation = () => {
           <FaArrowLeft className="me-2" /> Back to Reservations
         </Button>
       </div>
+
+      {error && <Alert variant="danger">{error}</Alert>}
 
       <Form onSubmit={handleSubmit}>
         {/* Guest Information */}
@@ -152,10 +224,10 @@ const CreateReservation = () => {
                     required
                   >
                     <option value="">Select Room Type</option>
-                    <option value="Standard">Standard - $100/night</option>
-                    <option value="Deluxe">Deluxe - $200/night</option>
-                    <option value="Suite">Suite - $500/night</option>
-                    <option value="Presidential">Presidential - $1000/night</option>
+                    <option value="Standard">Standard</option>
+                    <option value="Deluxe">Deluxe</option>
+                    <option value="Suite">Suite</option>
+                    <option value="Presidential">Presidential</option>
                   </Form.Select>
                 </Form.Group>
               </Col>
@@ -170,8 +242,8 @@ const CreateReservation = () => {
                   >
                     <option value="">Select Room</option>
                     {filteredRooms.map(room => (
-                      <option key={room.number} value={room.number}>
-                        Room {room.number} - {room.type}
+                      <option key={room._id} value={room.roomNumber}>
+                        Room {room.roomNumber} - {room.type} (${room.price}/night)
                       </option>
                     ))}
                   </Form.Select>
@@ -180,15 +252,15 @@ const CreateReservation = () => {
               <Col md={4}>
                 <Form.Group className="mb-3">
                   <Form.Label>Payment Method</Form.Label>
-                  <Form.Select 
-                    name="paymentMethod" 
+                  <Form.Select
+                    name="paymentMethod"
                     value={formData.paymentMethod}
                     onChange={handleChange}
                   >
-                    <option value="credit-card">Credit Card</option>
-                    <option value="debit-card">Debit Card</option>
-                    <option value="cash">Cash</option>
-                    <option value="bank-transfer">Bank Transfer</option>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="Debit Card">Debit Card</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
                   </Form.Select>
                 </Form.Group>
               </Col>
@@ -281,7 +353,7 @@ const CreateReservation = () => {
             <Row>
               <Col md={6}>
                 <p><strong>Number of Nights:</strong> {calculateNights()}</p>
-                <p><strong>Room Rate:</strong> ${availableRooms.find(r => r.number === formData.roomNumber)?.price || 0}/night</p>
+                <p><strong>Room Rate:</strong> ${availableRooms.find(r => r.roomNumber === formData.roomNumber)?.price || 0}/night</p>
               </Col>
               <Col md={6} className="text-end">
                 <h4>Total Amount: ${calculateTotal()}</h4>
@@ -296,8 +368,8 @@ const CreateReservation = () => {
           <Button variant="secondary" onClick={() => navigate('/reservations')}>
             Cancel
           </Button>
-          <Button variant="primary" type="submit">
-            <FaSave className="me-2" /> Create Reservation
+          <Button variant="primary" type="submit" disabled={loading}>
+            <FaSave className="me-2" /> {loading ? 'Creating...' : 'Create Reservation'}
           </Button>
         </div>
       </Form>

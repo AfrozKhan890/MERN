@@ -19,6 +19,7 @@
     "chart.js": "^4.5.1",
     "framer-motion": "^12.38.0",
     "react": "^19.2.5",
+    "react-aria": "^3.48.0",
     "react-bootstrap": "^2.10.10",
     "react-chart": "^0.0.1",
     "react-chartjs-2": "^5.3.1",

@@ -55,6 +55,14 @@ const LandingPage = () => {
     navigate('/');
   };
 
+  const handleGetStarted = () => {
+    if (user) {
+      navigate('/dashboard'); // or wherever you want logged-in users to go
+    } else {
+      setShowRoleModal(true);
+    }
+  };
+
   const fadeInUp = {
     hidden: { opacity: 0, y: 50 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] } }
@@ -83,6 +91,41 @@ const LandingPage = () => {
 
   return (
     <div className="landing-page">
+      {/* Role Selection Modal */}
+      <Modal show={showRoleModal} onHide={() => setShowRoleModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Choose Your Role</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row className="g-3">
+            <Col xs={6}>
+              <Button 
+                variant="outline-primary" 
+                className="w-100 py-3"
+                onClick={() => handleRoleSelect('guest')}
+                style={{ borderRadius: '12px' }}
+              >
+                <FaUsers size={24} className="mb-2" />
+                <div>Guest</div>
+                <small>Book rooms & view hotels</small>
+              </Button>
+            </Col>
+            <Col xs={6}>
+              <Button 
+                variant="outline-primary" 
+                className="w-100 py-3"
+                onClick={() => handleRoleSelect('hotel')}
+                style={{ borderRadius: '12px' }}
+              >
+                <FaHotel size={24} className="mb-2" />
+                <div>Hotel Owner</div>
+                <small>Manage your property</small>
+              </Button>
+            </Col>
+          </Row>
+        </Modal.Body>
+      </Modal>
+
       {/* Navbar - Same for all users, only buttons change */}
       <nav className={`landing-navbar ${scrolled ? 'scrolled' : ''}`}>
         <Container>
@@ -111,9 +154,14 @@ const LandingPage = () => {
                   </button>
                 </>
               ) : (
-                <button className="btn-get-started" onClick={() => navigate('/gallery')}>
-                  <FaImage style={{ marginRight: '6px' }} /> Gallery
-                </button>
+                <>
+                  <button className="btn-get-started" onClick={() => navigate('/gallery')}>
+                    <FaImage style={{ marginRight: '6px' }} /> Gallery
+                  </button>
+                  <button className="btn-get-started" onClick={() => setShowRoleModal(true)}>
+                    Get Started
+                  </button>
+                </>
               )}
             </div>
             
@@ -123,6 +171,35 @@ const LandingPage = () => {
           </div>
         </Container>
       </nav>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="landing-mobile-menu">
+          <a href="#features" onClick={() => setMobileMenuOpen(false)}>Features</a>
+          <a href="#about" onClick={() => setMobileMenuOpen(false)}>About</a>
+          <a href="#testimonials" onClick={() => setMobileMenuOpen(false)}>Reviews</a>
+          <a href="#contact" onClick={() => setMobileMenuOpen(false)}>Contact</a>
+          {user ? (
+            <>
+              <button className="btn-mobile" onClick={() => { navigate('/gallery'); setMobileMenuOpen(false); }}>
+                <FaImage /> Gallery
+              </button>
+              <button className="btn-mobile" onClick={handleLogout}>
+                <FaSignOutAlt /> Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="btn-mobile" onClick={() => { navigate('/gallery'); setMobileMenuOpen(false); }}>
+                <FaImage /> Gallery
+              </button>
+              <button className="btn-mobile btn-primary-mobile" onClick={() => { setShowRoleModal(true); setMobileMenuOpen(false); }}>
+                Get Started
+              </button>
+            </>
+          )}
+        </div>
+      )}
 
       {/* Hero Section */}
       <section className="hero-section">
@@ -141,17 +218,11 @@ const LandingPage = () => {
                   Streamline bookings, manage rooms, and enhance guest experience with our all-in-one platform.
                 </p>
                 <div className="hero-buttons">
-                  {user ? (
-                    <Button variant="primary" size="lg" onClick={() => navigate('/gallery')}>
-                      Browse Gallery <FaArrowRight style={{ marginLeft: '8px' }} />
-                    </Button>
-                  ) : (
-                    <Button variant="primary" size="lg" onClick={() => navigate('/gallery')}>
-                      Browse Gallery <FaArrowRight style={{ marginLeft: '8px' }} />
-                    </Button>
-                  )}
-                  <Button variant="outline-light" size="lg" href="#features">
-                    Explore Features
+                  <Button variant="primary" size="lg" onClick={() => navigate('/gallery')}>
+                    Browse Gallery <FaArrowRight style={{ marginLeft: '8px' }} />
+                  </Button>
+                  <Button variant="outline-light" size="lg" onClick={handleGetStarted}>
+                    Get Started <FaArrowRight style={{ marginLeft: '8px' }} />
                   </Button>
                 </div>
                 <div className="hero-stats">
@@ -370,6 +441,7 @@ const LandingPage = () => {
         </Container>
       </section>
 
+      {/* Live Hotel Feed */}
       <section className="features-section">
         <Container>
           <motion.div
@@ -421,7 +493,7 @@ const LandingPage = () => {
           >
             <h2>Ready to Transform Your Hotel Operations?</h2>
             <p>Join 500+ hotels that trust LuxuryStay for their management needs.</p>
-            {user ? (
+            <div className="hero-buttons" style={{ justifyContent: 'center' }}>
               <Button 
                 size="lg" 
                 style={{ background: '#F4A261', border: 'none', padding: '16px 40px', fontWeight: 700, borderRadius: '12px', fontSize: '1.1rem' }}
@@ -429,15 +501,15 @@ const LandingPage = () => {
               >
                 Browse Gallery <FaArrowRight style={{ marginLeft: '8px' }} />
               </Button>
-            ) : (
               <Button 
                 size="lg" 
-                style={{ background: '#F4A261', border: 'none', padding: '16px 40px', fontWeight: 700, borderRadius: '12px', fontSize: '1.1rem' }}
-                onClick={() => navigate('/gallery')}
+                variant="outline-light"
+                style={{ padding: '16px 40px', fontWeight: 700, borderRadius: '12px', fontSize: '1.1rem' }}
+                onClick={handleGetStarted}
               >
-                Browse Gallery <FaArrowRight style={{ marginLeft: '8px' }} />
+                Get Started <FaArrowRight style={{ marginLeft: '8px' }} />
               </Button>
-            )}
+            </div>
           </motion.div>
         </Container>
       </section>
@@ -526,15 +598,27 @@ const LandingPage = () => {
               <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem', marginBottom: '16px' }}>
                 Ready to streamline your hotel operations?
               </p>
-              {user ? (
-                <Button style={{ background: '#F4A261', border: 'none', fontWeight: 600 }} onClick={() => navigate('/gallery')}>
-                  View Gallery
-                </Button>
-              ) : (
-                <Button style={{ background: '#F4A261', border: 'none', fontWeight: 600 }} onClick={() => navigate('/gallery')}>
-                  View Gallery
-                </Button>
-              )}
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                {user ? (
+                  <>
+                    <Button style={{ background: '#F4A261', border: 'none', fontWeight: 600 }} onClick={() => navigate('/gallery')}>
+                      View Gallery
+                    </Button>
+                    <Button variant="outline-light" style={{ fontWeight: 600 }} onClick={() => navigate('/dashboard')}>
+                      Dashboard
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button style={{ background: '#F4A261', border: 'none', fontWeight: 600 }} onClick={() => navigate('/gallery')}>
+                      View Gallery
+                    </Button>
+                    <Button variant="outline-light" style={{ fontWeight: 600 }} onClick={() => setShowRoleModal(true)}>
+                      Get Started
+                    </Button>
+                  </>
+                )}
+              </div>
             </Col>
           </Row>
           <hr />
@@ -543,7 +627,6 @@ const LandingPage = () => {
           </p>
         </Container>
       </footer>
-
     </div>
   );
 };
